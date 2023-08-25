@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 import panomete.learn.spb3batch.entity.Books;
 
 public class BookItemReader extends FlatFileItemReader<Books>{
-    private String fileInput;
+    private final String fileInput;
 
     public BookItemReader(String fileInput) {
         this.fileInput = fileInput;
