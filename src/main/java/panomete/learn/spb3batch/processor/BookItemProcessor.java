@@ -21,7 +21,7 @@ public class BookItemProcessor implements ItemProcessor<Books, Books> {
                 .edition(edition)
                 .publishedDate(publishedDate)
                 .build();
-        log.info("a book has been transformed: {}", transformedBook.toString());
+        log.info("a book title: {} has been transformed", transformedBook.getTitle());
         return transformedBook;
     }
 }

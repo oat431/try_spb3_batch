@@ -7,10 +7,12 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import panomete.learn.spb3batch.entity.Books;
 import panomete.learn.spb3batch.processor.BookItemProcessor;
 import panomete.learn.spb3batch.listener.JobCompletionNotificationListener;
+import panomete.learn.spb3batch.reader.BookItemReader;
 import panomete.learn.spb3batch.repository.BookRepository;
+import panomete.learn.spb3batch.writer.BookItemWriter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -30,29 +34,18 @@ public class BatchConfiguration {
     private String fileInput;
 
     @Bean
-    public FlatFileItemReader<Books> reader() {
-        return new FlatFileItemReaderBuilder<Books>().name("bookItemReader")
-                .resource(new ClassPathResource(fileInput))
-                .delimited()
-                .names(new String[]{"title", "author", "publisher", "edition", "publishedDate"})
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<Books>() {{
-                        setTargetType(Books.class);
-                    }})
-                .build();
-    }
-
-    @Bean
     public BookItemProcessor processor() {
         return new BookItemProcessor();
     }
 
     @Bean
-    public ItemWriter<Books> writer() {
-        return items -> {
-            for (Books item : items) {
-                bookRepository.save(item);
-            }
-        };
+    public BookItemWriter writer() {
+        return new BookItemWriter(bookRepository);
+    }
+
+    @Bean
+    public BookItemReader reader() {
+        return new BookItemReader(this.fileInput);
     }
 
     @Bean
@@ -61,7 +54,7 @@ public class BatchConfiguration {
                 .<Books, Books> chunk(10, transactionManager)
                 .reader(reader())
                 .processor(processor())
-                .writer(writer)
+                .writer(writer())
                 .build();
     }
 
