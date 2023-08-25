@@ -1,4 +1,4 @@
-package panomete.learn.spb3batch.config;
+package panomete.learn.spb3batch.batch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -21,7 +21,7 @@ import panomete.learn.spb3batch.writer.BookItemWriter;
 
 @Configuration
 @RequiredArgsConstructor
-public class BatchConfiguration {
+public class BookBatch {
     final BookRepository bookRepository;
 
     @Value("${file.input}")

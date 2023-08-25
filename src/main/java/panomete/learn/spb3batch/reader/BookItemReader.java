@@ -8,8 +8,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import panomete.learn.spb3batch.entity.Books;
 
-
-//@Component
 public class BookItemReader extends FlatFileItemReader<Books>{
     private String fileInput;
 
@@ -33,13 +31,5 @@ public class BookItemReader extends FlatFileItemReader<Books>{
         lineMapper.setFieldSetMapper(fieldSetMapper);
 
         setLineMapper(lineMapper);
-//        new FlatFileItemReaderBuilder<Books>().name("bookItemReader")
-//                .resource(new ClassPathResource(fileInput))
-//                .delimited()
-//                .names(new String[]{"title", "author", "publisher", "edition", "publishedDate"})
-//                .fieldSetMapper(new BeanWrapperFieldSetMapper<Books>() {{
-//                    setTargetType(Books.class);
-//                }})
-//                .build();
     }
 }
